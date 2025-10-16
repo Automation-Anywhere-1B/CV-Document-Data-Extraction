@@ -72,9 +72,9 @@ val_x, val_ma = val_x[:val_len],     val_ma[:val_len]
 
 # plot and save
 plt.figure(figsize=(8,5))
-plt.plot(train_x, train_ma, label="Train loss (box_reg)")
-plt.plot(val_x,   val_ma,   label="Val loss (box_reg)")
-plt.title("Training vs Validation Loss (smoothed)")
+plt.plot(train_x, train_ma, label="Train loss")
+plt.plot(val_x,   val_ma,   label="Val loss")
+plt.title("Training vs Validation Loss")
 plt.xlabel("Iteration")
 plt.ylabel("Loss")
 plt.legend()
