@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+
+.idea/
+.vscode/
+
+output/
+data/
+!output_saved/
+pyvenv.cfg
+
+.DS_Store
