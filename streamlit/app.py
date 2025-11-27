@@ -18,7 +18,7 @@ with st.sidebar:
     selected
 
 # Title
-st.title(":red[_Welcome to CalVision_]")
+st.title(":red[_Welcome to CalVision_ - test]")
 
 # Subheader
 st.subheader("Instructions")
