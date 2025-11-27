@@ -1,56 +1,173 @@
-from streamlit_option_menu import option_menu
 import streamlit as st
+from streamlit_option_menu import option_menu
+from PIL import Image
+import io
 import numpy as np
-import pandas as pd
-from io import StringIO
+from pathlib import Path
+from Inference.predict_yolo import run_yolo_inference
 
-# Sidebar menu
+st.set_page_config(page_title="CalVision", layout="wide")
+
+# =========================================================
+#   Load YOLO model (cached, runs once)
+# =========================================================
+YOLO_WEIGHTS_PATH = (
+    Path("Yolo_Model") / "runs" / "detect" / "train" / "weights" / "best.pt"
+)
+
+
+
+# Detect if path exists (debug help)
+if not YOLO_WEIGHTS_PATH.exists():
+    st.error(f"❌ YOLO weights not found at: {YOLO_WEIGHTS_PATH}")
+#else:
+    #st.sidebar.success(f"Using YOLO model:\n{YOLO_WEIGHTS_PATH}")
+
+# =========================================================
+# Sidebar Navigation
+# =========================================================
 with st.sidebar:
-    selected = option_menu("Model Options", ["YOLO", 'YOLO Stacked Model', 'Detectron'], 
-      menu_icon="none", 
-      default_index=1,
-      styles = {
-        "container": {"padding-top": "350px", "background-color": "#fafafa"},
-        "menu-icon": {"text-align": "left"},
-        "nav-link": {"text-align": "left"},
-      }
+    selected = option_menu(
+        "Navigation",
+        ["Home", "YOLO Model", "YOLO Stacked", "Detectron"],
+        menu_icon="cast",
+        default_index=0,
     )
-    selected
 
-# Title
-st.title(":red[_Welcome to CalVision_ - test]")
+# =========================================================
+# HOME PAGE — Full Workflow
+# =========================================================
+if selected == "Home":
+    st.title("📄 Welcome to CalVision")
+    st.subheader("Document Vision Model Comparison Tool")
 
-# Subheader
-st.subheader("Instructions")
+    st.markdown(
+        """
+        ### 📌 Instructions  
+        Upload your document, then click **Run All Models** to compare YOLO, YOLO Stacked, and Detectron2.
+        """
+    )
 
-# Instructions Text
-st.markdown("**Welcome!**\nIn order to submit your photo for parsing, please make sure to follow these simple instructions.")
-st.markdown(":one: Position your check in the center of your camera")
-st.markdown(":two: Make sure you have good lighting and the **_whole_** check is visible")
-st.markdown(":three: Confirm that your check is in focus and there are no other objects in the photo")
-st.markdown(":four: You are ready to submit!!")
+    # Upload
+    uploaded_file = st.file_uploader(
+        "Upload your document image", type=["jpg", "jpeg", "png"]
+    )
 
+    if uploaded_file:
+        # Display image
+        image = Image.open(uploaded_file).convert("RGB")
+        st.image(image, caption="Uploaded Image", use_column_width=True)
 
+        # Save to session state
+        st.session_state["uploaded_image"] = image
+        st.session_state["uploaded_bytes"] = uploaded_file.getvalue()
 
-# Uploading Image
-uploaded_file = st.file_uploader("Choose a file")
-if uploaded_file is not None:
-    # To read file as bytes:
-    bytes_data = uploaded_file.getvalue()
-    st.write(bytes_data)
+    # Run all models
+    if uploaded_file and st.button("Run All Models", type="primary"):
+        st.session_state["results"] = {}
 
-    # To convert to a string based IO:
-    stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-    st.write(stringio)
+        # ---------------------------------------------------
+        # YOLO Model
+        # ---------------------------------------------------
+        with st.spinner("Running YOLO Model..."):
+            annotated, detections = run_yolo_inference(
+                image_bytes=st.session_state["uploaded_bytes"],
+                weights_path=str(YOLO_WEIGHTS_PATH),
+            )
 
-    # To read file as string:
-    string_data = stringio.read()
-    st.write(string_data)
+            st.session_state["results"]["yolo"] = {
+                "image": annotated,
+                "detections": detections
+            }
 
-    # Can be used wherever a "file-like" object is accepted:
-    dataframe = pd.read_csv(uploaded_file)
-    st.write(dataframe)
+        # ---------------------------------------------------
+        # YOLO Stacked (placeholder)
+        # ---------------------------------------------------
+        with st.spinner("Running YOLO Stacked..."):
+            st.session_state["results"]["stacked"] = {
+                "image": image,
+                "detections": [],
+            }
 
+        # ---------------------------------------------------
+        # Detectron2 (placeholder)
+        # ---------------------------------------------------
+        with st.spinner("Running Detectron2..."):
+            st.session_state["results"]["detectron"] = {
+                "image": image,
+                "detections": [],
+            }
 
-# Submit Button
-submit = st.button("Submit Your Photo", type="primary")
+        st.success("All models finished running!")
+
+    # Display results
+    if "results" in st.session_state:
+        st.header("📊 Model Comparison")
+
+        tabs = st.tabs(["YOLO", "YOLO Stacked", "Detectron2"])
+
+        # YOLO tab
+        with tabs[0]:
+            st.subheader("YOLO Results")
+            st.image(
+                st.session_state["results"]["yolo"]["image"], use_column_width=True
+            )
+            st.json(st.session_state["results"]["yolo"]["detections"])
+
+        # Stacked
+        with tabs[1]:
+            st.subheader("YOLO Stacked Results")
+            st.image(
+                st.session_state["results"]["stacked"]["image"], use_column_width=True
+            )
+            st.json(st.session_state["results"]["stacked"]["detections"])
+
+        # Detectron
+        with tabs[2]:
+            st.subheader("Detectron2 Results")
+            st.image(
+                st.session_state["results"]["detectron"]["image"],
+                use_column_width=True,
+            )
+            st.json(st.session_state["results"]["detectron"]["detections"])
+
+# =========================================================
+# YOLO Standalone Page
+# =========================================================
+if selected == "YOLO Model":
+    st.title("YOLO Model")
+
+    uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+
+    if uploaded_file:
+        # Show uploaded image
+        image = Image.open(uploaded_file).convert("RGB")
+        st.image(image, caption="Uploaded Image", use_column_width=True)
+
+        # Run YOLO inference
+        if st.button("Run YOLO Inference", type="primary"):
+            with st.spinner("Running YOLO Model..."):
+                annotated, detections = run_yolo_inference(
+                    image_bytes=uploaded_file.getvalue(),
+                    weights_path=str(YOLO_WEIGHTS_PATH)
+                )
+
+            st.subheader("YOLO Output")
+            st.image(annotated, caption="Predicted Image", use_column_width=True)
+
+            st.subheader("Detections")
+            st.json(detections)
+
+# =========================================================
+# YOLO Stacked Standalone Page (placeholder)
+# =========================================================
+if selected == "YOLO Stacked":
+    st.title("YOLO Stacked Model")
+    st.info("Stacked model integration coming soon!")
+
+# =========================================================
+# Detectron Page (placeholder)
+# =========================================================
+if selected == "Detectron":
+    st.title("Detectron2 Model")
+    st.info("Detectron2 inference coming soon!")
