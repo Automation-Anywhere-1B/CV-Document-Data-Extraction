@@ -5,6 +5,7 @@ import io
 import numpy as np
 from pathlib import Path
 from Inference.predict_yolo import run_yolo_inference
+from Inference.predict_detectron import run_detectron_inference
 
 st.set_page_config(page_title="CalVision", layout="wide")
 
@@ -93,9 +94,12 @@ if selected == "Home":
         # Detectron2 (placeholder)
         # ---------------------------------------------------
         with st.spinner("Running Detectron2..."):
+            det_annotated, det_detections = run_detectron_inference(
+                st.session_state["uploaded_bytes"]
+            )
             st.session_state["results"]["detectron"] = {
-                "image": image,
-                "detections": [],
+                "image": det_annotated,
+                "detections": det_detections,
             }
 
         st.success("All models finished running!")
@@ -158,6 +162,7 @@ if selected == "YOLO Model":
             st.subheader("Detections")
             st.json(detections)
 
+
 # =========================================================
 # YOLO Stacked Standalone Page (placeholder)
 # =========================================================
@@ -168,6 +173,25 @@ if selected == "YOLO Stacked":
 # =========================================================
 # Detectron Page (placeholder)
 # =========================================================
+# if selected == "Detectron":
+#     st.title("Detectron2 Model")
+#     st.info("Detectron2 inference coming soon!")
 if selected == "Detectron":
     st.title("Detectron2 Model")
-    st.info("Detectron2 inference coming soon!")
+
+    uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+
+    if uploaded_file:
+        image_bytes = uploaded_file.getvalue()
+
+        if st.button("Run Detectron2 Inference", type="primary"):
+            with st.spinner("Running Detectron2..."):
+                annotated, detections = run_detectron_inference(image_bytes)
+
+            st.subheader("Detectron2 Output")
+            st.image(annotated, caption="Predicted Image", use_column_width=True)
+
+            st.subheader("Detections")
+            st.json(detections)
+    else:
+        st.info("Please upload an image to run Detectron2.")
