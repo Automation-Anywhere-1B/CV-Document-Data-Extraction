@@ -18,6 +18,17 @@ Throughout this project, we focused on creating an application that makes the te
 
     to open the app on your local device. 
 
+### Detectron2 Weights
+
+The trained Detectron2 model weights (`model_final.pth`) are not stored in the repo
+due to GitHub's 100MB file limit.
+
+Please download them from: [Link](https://drive.google.com/file/d/1jWxcURBcVml9_GHqsgy8Gv0I-keas6m1/view?usp=drive_link)
+
+Then place the file at:
+
+`Detectron2/output/model_final.pth`
+
 ### User Guide
 In order to submit your photo, please make sure to follow these simple instructions:
 
