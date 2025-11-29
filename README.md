@@ -48,6 +48,6 @@ In order to submit your photo, please make sure to follow these simple instructi
 
 **Thank you** to our AI Coach, **Swagath Babu** and our Challenge Advisors, **Vibhas Gejji** and **Joseph Lam**. And, a thank you to the Break Through Tech AI Program for this opportunity.
 
-The students who were a part of this project were Gurnoor Bola, Margaret Galvez, Aaryan Hakim, Ricardo Tellez, Thy Tran, Meera Vyas, and Priya Gadhe
+The students who were a part of this project were Gurnoor Bola, Margaret Galvez, Aaryan Hakim, Ricardo Varela Tellez, Thy Tran, Meera Vyas, and Priya Gadhe
 
 
