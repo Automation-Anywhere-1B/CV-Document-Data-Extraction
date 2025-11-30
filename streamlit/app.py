@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from PIL import Image
 import io
+import sys
 import numpy as np
 from pathlib import Path
 from Inference.predict_yolo import run_yolo_inference
@@ -45,7 +46,18 @@ if selected == "Home":
     st.markdown(
         """
         ### 📌 Instructions  
-        Upload your document, then click **Run All Models** to compare YOLO, YOLO Stacked, and Detectron2.
+        
+        **Welcome!** In order to submit your photo, please make sure to follow these simple instructions:
+
+        :one: Position your check in the center of your camera
+
+        :two: Make sure you have good lighting and the **_whole_** check is visible
+
+        :three: Confirm that your check is in **_focus_** and there are no other objects in the photo
+
+        :four: You are ready to submit!
+
+        :five: Upload your document, then click **Run All Models** to compare YOLO, YOLO Stacked, and Detectron2.
         """
     )
 
@@ -139,7 +151,7 @@ if selected == "Home":
 # YOLO Standalone Page
 # =========================================================
 if selected == "YOLO Model":
-    st.title("YOLO Model")
+    st.title("YOLO Model Metrics")
 
     uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
@@ -162,12 +174,17 @@ if selected == "YOLO Model":
             st.subheader("Detections")
             st.json(detections)
 
+    st.title("Overall Metrics")
+    st.image("Yolo_Model/runs/detect/train/confusion_matrix_normalized.png", caption="Confusion Matrix (Normalized)")
+    st.image("Yolo_Model/runs/detect/train/BoxF1_curve.png", caption="F1 Curve")
+    st.image("Yolo_Model/runs/detect/train/BoxR_curve.png", caption="Recall Confidence Curve")
+
 
 # =========================================================
 # YOLO Stacked Standalone Page (placeholder)
 # =========================================================
 if selected == "YOLO Stacked":
-    st.title("YOLO Stacked Model")
+    st.title("YOLO Stacked Model Metrics")
     st.info("Stacked model integration coming soon!")
 
 # =========================================================
@@ -177,7 +194,7 @@ if selected == "YOLO Stacked":
 #     st.title("Detectron2 Model")
 #     st.info("Detectron2 inference coming soon!")
 if selected == "Detectron":
-    st.title("Detectron2 Model")
+    st.title("Detectron2 Model Metrics")
 
     uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
@@ -195,3 +212,8 @@ if selected == "Detectron":
             st.json(detections)
     else:
         st.info("Please upload an image to run Detectron2.")
+
+    st.title("Overall Metrics")
+    st.image("Yolo_Model/runs/detect/train/confusion_matrix_normalized.png", caption="Confusion Matrix (Normalized)")
+    st.image("Yolo_Model/runs/detect/train/BoxF1_curve.png", caption="F1 Curve")
+    st.image("Yolo_Model/runs/detect/train/BoxR_curve.png", caption="Recall Confidence Curve")
