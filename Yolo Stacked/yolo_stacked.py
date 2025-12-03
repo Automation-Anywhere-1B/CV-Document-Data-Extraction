@@ -7,11 +7,7 @@ class Yolo_Stacked:
     #store important model things
     def __init__(self, path):
         self.yolo = None
-        self.detection = None
-
-    #sets which detection model to use (Resnet or Inception)
-    def set_detection_model(self, model):
-        self.detection = model
+        self.siamese = None
 
     #TODO
     #first call the yolo class's predict to generate all bounding boxes
