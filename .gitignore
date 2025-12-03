@@ -18,8 +18,6 @@ Detectron2/output/*
 
 **/data/
 
-**/yolo/**/*.png
-**/yolo/**/*.jpg
 *.zip
 
 !output_saved/
