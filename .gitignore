@@ -14,7 +14,18 @@ Detectron2/output/*
 !Detectron2/output/eval_results.json
 !Detectron2/output/coco_instances_results.json
 
+<<<<<<< HEAD
 data/
+=======
+**/datasets/
+
+**/data/
+
+**/yolo/**/*.png
+**/yolo/**/*.jpg
+*.zip
+
+>>>>>>> yolo-stacked
 !output_saved/
 
 pyvenv.cfg
