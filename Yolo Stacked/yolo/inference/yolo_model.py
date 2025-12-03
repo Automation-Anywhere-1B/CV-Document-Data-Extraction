@@ -23,7 +23,7 @@ class Yolo_Detection:
         if not self.predictions:
             return
         batch = self.predictions[-1]
-        imgs = [batch[i].plot() for i in range(len(batch))]
+        imgs = [batch[i].plot()[::, ::, ::-1] for i in range(len(batch))]
         num_imgs = len(imgs)
         cols = 3 if num_imgs >= 3 else num_imgs
         rows = num_imgs//cols if num_imgs % cols == 0 else num_imgs//cols + 1
@@ -48,7 +48,7 @@ class Yolo_Detection:
         imgs = []
         num_imgs = 0
         for batch in self.predictions:
-            imgs.extend([batch[i].plot() for i in range(len(batch))])
+            imgs.extend([batch[i].plot()[::, ::, ::-1] for i in range(len(batch))])
             num_imgs += len(batch)
         cols = 3 if num_imgs >= 3 else num_imgs
         rows = num_imgs//cols if num_imgs % cols == 0 else num_imgs//cols + 1
