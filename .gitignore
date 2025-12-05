@@ -14,7 +14,12 @@ Detectron2/output/*
 !Detectron2/output/eval_results.json
 !Detectron2/output/coco_instances_results.json
 
-data/
+**/datasets/
+
+**/data/
+
+*.zip
+
 !output_saved/
 
 pyvenv.cfg
