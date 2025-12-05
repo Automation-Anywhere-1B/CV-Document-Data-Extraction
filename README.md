@@ -8,7 +8,7 @@ Throughout this project, we focused on creating an application that makes the te
 ### Intallation Guide
 1. In order to run this app locally, please run 
 
-    ```pip install requirements.txt```
+    ```pip install -r requirements.txt```
 
     to install at the necessary libraries. 
 
