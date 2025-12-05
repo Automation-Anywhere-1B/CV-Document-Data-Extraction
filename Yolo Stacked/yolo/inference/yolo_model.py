@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 from PIL import Image
+import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -17,6 +18,25 @@ class Yolo_Detection:
         pred = self.model(images)
         self.predictions.append(pred)
         return pred
+    
+    #returned cropped signature image of the last prediction
+    def signatures_last_prediction(self):
+        if not self.predictions:
+            return
+        batch = self.predictions[-1]
+        r = batch[0]
+        img = r.orig_img
+        boxes = r.boxes
+        filtered = boxes[boxes.cls == 0]
+
+        crops = []
+        for b in filtered:
+            x1, y1, x2, y2 = b.xyxy[0].cpu().numpy().astype(int)
+            crop = img[y1:y2, x1:x2]
+            crop_rgb = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
+            crop = Image.fromarray(crop_rgb)
+            crops.append(crop)
+        return crops
 
     #returns np image array
     def visualize_last_prediction(self):
