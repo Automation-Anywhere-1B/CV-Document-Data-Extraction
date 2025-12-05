@@ -1,0 +1,7 @@
+path: datasets
+train: images/train
+val: images/val
+
+nc: 7
+
+names: ['signature', 'amount', 'amount_words', 'date', 'payee', 'signature_f', 'signature_g']
