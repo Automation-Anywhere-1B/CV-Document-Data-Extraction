@@ -175,9 +175,9 @@ if selected == "YOLO Model":
             st.json(detections)
 
     st.title("Overall Metrics")
-    st.image("Yolo_Model/runs/detect/train/confusion_matrix_normalized.png", caption="Confusion Matrix (Normalized)")
-    st.image("Yolo_Model/runs/detect/train/BoxF1_curve.png", caption="F1 Curve")
-    st.image("Yolo_Model/runs/detect/train/BoxR_curve.png", caption="Recall Confidence Curve")
+    st.image("Yolo_Model/runs/detect/train/confusion_matrix_normalized.png", caption="Confusion Matrix (Normalized)", width=600)
+    st.image("Yolo_Model/runs/detect/train/BoxF1_curve.png", caption="F1 Curve", width=600)
+    st.image("Yolo_Model/runs/detect/train/BoxR_curve.png", caption="Recall Confidence Curve", width=600)
 
 
 # =========================================================
@@ -214,6 +214,6 @@ if selected == "Detectron":
         st.info("Please upload an image to run Detectron2.")
 
     st.title("Overall Metrics")
-    st.image("Yolo_Model/runs/detect/train/confusion_matrix_normalized.png", caption="Confusion Matrix (Normalized)")
-    st.image("Yolo_Model/runs/detect/train/BoxF1_curve.png", caption="F1 Curve")
-    st.image("Yolo_Model/runs/detect/train/BoxR_curve.png", caption="Recall Confidence Curve")
+    st.image("Detectron2/output_saved/iou_distribution.png", caption="IOU Distribution", width=500)
+    st.image("Detectron2/output_saved/loss_curve.png", caption="Loss Curve", width=500)
+    st.image("Detectron2/output_saved/pr_curves.png", caption="Precision Curves", width=500)
