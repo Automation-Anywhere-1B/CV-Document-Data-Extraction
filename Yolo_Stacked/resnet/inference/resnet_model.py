@@ -56,3 +56,21 @@ class Resnet_Classifier:
 
             self.model.train(mode=was_training)
 
+    def predict(self, img_src):
+        """
+        Return:
+          - pred_class (int)
+          - confidence (float)
+          - probs (np.array of shape [num_classes])
+        """
+        self.model.eval()
+        img = self.val_transform(img_src)
+        img = img.unsqueeze(0).to(self.device)
+
+        with torch.no_grad():
+            outputs = self.model(img)              # [1, 2]
+            probs = torch.softmax(outputs, dim=1)
+            conf, preds = torch.max(probs, dim=1)
+
+        return preds[0].item(), conf[0].item(), probs[0].cpu().numpy()
+

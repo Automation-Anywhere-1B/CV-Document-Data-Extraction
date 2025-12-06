@@ -2,6 +2,8 @@ from ultralytics import YOLO
 from PIL import Image
 import cv2
 import numpy as np
+import io
+import itertools
 import matplotlib.pyplot as plt
 
 class Yolo_Detection:
@@ -14,9 +16,32 @@ class Yolo_Detection:
     def predict(self, imgs):
         if not isinstance(imgs, list):
             imgs = [imgs]
-        images = [Image.open(img) for img in imgs]
+        
+        images = []
+        for img in imgs:
+            # Case 1: already a PIL image
+            if isinstance(img, Image.Image):
+                images.append(img)
+
+            # Case 2: numpy array 
+            elif isinstance(img, np.ndarray):
+                images.append(img)
+
+            # Case 3: raw bytes
+            elif isinstance(img, (bytes, bytearray)):
+                pil_img = Image.open(io.BytesIO(img)).convert("RGB")
+                images.append(pil_img)
+
         pred = self.model(images)
         self.predictions.append(pred)
+
+        # --- Debug here ---
+        # print(f"Got {len(pred)} result objects.")
+        # r = pred[0]
+        # print("Detected class IDs:", r.boxes.cls.cpu().numpy())
+        # print("Class mapping:", r.names)
+        # ------------------
+
         return pred
     
     #returned cropped signature image of the last prediction
@@ -27,7 +52,21 @@ class Yolo_Detection:
         r = batch[0]
         img = r.orig_img
         boxes = r.boxes
+        names = r.names  
         filtered = boxes[boxes.cls == 0]
+
+        # Collect all class IDs that are signature-like
+        sig_ids = [i for i, name in names.items() if name.startswith("signature")]
+
+        if not sig_ids:
+            return []
+
+        cls_np = boxes.cls.cpu().numpy()
+        mask = np.isin(cls_np, sig_ids)
+        filtered = boxes[mask]
+
+        if len(filtered) == 0:
+            return []
 
         crops = []
         for b in filtered:
@@ -42,7 +81,7 @@ class Yolo_Detection:
     def visualize_last_prediction(self):
         if not self.predictions:
             return
-        batch = self.predictions[-1]
+        batch = self.predictions[-1]    
         imgs = [batch[i].plot()[::, ::, ::-1] for i in range(len(batch))]
         num_imgs = len(imgs)
         cols = 3 if num_imgs >= 3 else num_imgs

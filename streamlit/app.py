@@ -6,6 +6,7 @@ import sys
 import numpy as np
 from pathlib import Path
 from Inference.predict_yolo import run_yolo_inference
+from Inference.predict_yolo_stacked import run_yolo_stacked_inference
 from Inference.predict_detectron import run_detectron_inference
 
 st.set_page_config(page_title="CalVision", layout="wide")
@@ -15,6 +16,9 @@ st.set_page_config(page_title="CalVision", layout="wide")
 # =========================================================
 YOLO_WEIGHTS_PATH = (
     Path("Yolo_Model") / "runs" / "detect" / "train" / "weights" / "best.pt"
+)
+YOLO_STACKED_RESNET_WEIGHTS_PATH = (
+    Path("Yolo_Stacked") / "resnet" /  "train" / "resnet_best_weights.pth"
 )
 
 
@@ -85,7 +89,7 @@ if selected == "Home":
         with st.spinner("Running YOLO Model..."):
             annotated, detections = run_yolo_inference(
                 image_bytes=st.session_state["uploaded_bytes"],
-                weights_path=str(YOLO_WEIGHTS_PATH),
+                weights_path=str(YOLO_WEIGHTS_PATH)
             )
 
             st.session_state["results"]["yolo"] = {
@@ -97,9 +101,18 @@ if selected == "Home":
         # YOLO Stacked (placeholder)
         # ---------------------------------------------------
         with st.spinner("Running YOLO Stacked..."):
+            pred, stacked_annotated, stacked_detections = run_yolo_stacked_inference(
+                image_bytes=st.session_state["uploaded_bytes"],
+                yolo_weights_path=str(YOLO_WEIGHTS_PATH),
+                resnet_weights_path=str(YOLO_STACKED_RESNET_WEIGHTS_PATH),
+            )
+
+            cls = "Forged" if pred == 1 else "Genuine"
+
             st.session_state["results"]["stacked"] = {
-                "image": image,
-                "detections": [],
+                "image": stacked_annotated,
+                "class": cls,
+                "detections": stacked_detections,
             }
 
         # ---------------------------------------------------
@@ -136,6 +149,7 @@ if selected == "Home":
             st.image(
                 st.session_state["results"]["stacked"]["image"], use_column_width=True
             )
+            st.text(st.session_state["results"]["stacked"]["class"])
             st.json(st.session_state["results"]["stacked"]["detections"])
 
         # Detectron
