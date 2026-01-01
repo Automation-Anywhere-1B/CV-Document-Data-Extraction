@@ -13,7 +13,7 @@ Welcome to **CalVision**! This was made from the Automation Anywhere 1-B Team to
 | Margaret Galvez  | @margoglvz    | Data exploration, overall project coordination, Streamlit interface, EfficientDet, connecting YOLO Stacked to interface       |
 | Thy Tran         | @thyatran     | Data exploration, Detectron2 training and optimization, results interpretation and analysis                                    |
 | Gurnoor Bola     | @GurnoorBola  | Data exploration, YOLO Model & YOLO Stacked training and optimization, results interpretation and analysis                  |
-| Ricardo Tellez   | @RVARELAT     | Data exploration, Streamlit interface, performance analysis                                                                   |
+| Ricardo Varela Tellez   | @RVARELAT     | Data exploration, Streamlit interface, performance analysis                                                                   |
 | Meera Vyas       | @meeraa5      | Detectron model testing, performance analysis, results interpretation                                                         |
 | Aaryan Hakim     | @syaaryan     | RT-DETR training, connecting YOLO to interface, Streamlit interface                                                           |
 
